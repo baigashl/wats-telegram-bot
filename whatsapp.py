@@ -17,9 +17,27 @@ async def whatsapp_render(contact, data, driver):
         get = await get_data_message()
         if data[1] in await get_data_message_sku():
             data_sku = get[data[1]]
+            print(data[-1])
             driver.get(contact)
             await asyncio.sleep(20)
-            message_content = f"Здравствуйте,\n Благодарим вас за заказ!"
+            if data[-1] == 'DELIVERY_PICKUP':
+                message_content = """
+Здравствуйте, спасибо за заказ!
+
+Ваш заказ вы можете забрать с 10.00-21.00 по адресу:
+
+Науаи, жилой комплекс
+Навои, 37, Алматы
+https://go.2gis.com/bhxapt
+
+Навои 37
+ЖК Навои
+Блок 6
+Этаж 2
+Квартира 2
+            """
+            else:
+                message_content = f"Здравствуйте,\n Благодарим вас за заказ!"
 
             inp_xpath = '//div[@contenteditable="true"][@data-tab="10"]'
             input_box = WebDriverWait(driver, 5).until(
@@ -35,10 +53,15 @@ async def whatsapp_render(contact, data, driver):
             await asyncio.sleep(1)
             h = ""
             if len(data_sku) >= 2:
-
                 h += os.path.join(base_dir, str(data_sku[1]))
                 for i in data_sku[2:]:
                     h += '\n' + os.path.join(base_dir, str(i))
+
+            if data[-1] == 'DELIVERY_PICKUP':
+                if h != "":
+                    h += '\n' + os.path.join(base_dir, 'map.jpeg')
+                else:
+                    h += os.path.join(base_dir, 'map.jpeg')
 
             if h != "":
                 image_box = driver.find_element(By.XPATH, '//input[@accept="image/*,video/mp4,video/3gpp,video/quicktime"]')
@@ -46,7 +69,7 @@ async def whatsapp_render(contact, data, driver):
                 await asyncio.sleep(5)
                 send_button = driver.find_element(By.XPATH, '//span[@data-icon="send"]')
                 send_button.click()
-            await update_table(data[-1])
+            await update_table(data[-2])
 
         await asyncio.sleep(2)
     except IndexError as e:

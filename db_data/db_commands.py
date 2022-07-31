@@ -190,8 +190,9 @@ async def add_deatil(data):
     phone = data['phone']
     product = data['product']
     sku = data['sku']
+    status = data['status']
     with connection.cursor() as cursor:
-        cursor.execute("INSERT INTO info_user(id_order, user_name, phone, product, sku, send) VALUES (%s, %s, %s, %s, %s, %s);", (id_order, user_name, phone, product, sku, '0'))
+        cursor.execute("INSERT INTO info_user(id_order, user_name, phone, product, status, sku, send) VALUES (%s, %s, %s, %s, %s,  %s, %s);", (id_order, user_name, phone, product, status, sku, '0'))
 
 
 async def get_data_message_sku2():
@@ -244,10 +245,11 @@ async def get_data_info3():
 async def get_data_whatsapp():
     data = []
     with connection.cursor() as cursor:
-        cursor.execute("SELECT phone, sku, id_order FROM info_user;")
+        cursor.execute("SELECT phone, sku, id_order, status, send FROM info_user;")
         for i in cursor.fetchall():
+            print(i)
             if i[-1] != '1':
-                data.append([i[0], i[1], str(i[2])])
+                data.append([i[0], i[1], str(i[2]), i[3]])
     return data
 
 

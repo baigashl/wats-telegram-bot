@@ -18,6 +18,7 @@ async def add_data():
                     db['phone'] = data2['purchaserPhoneNumber']
                     db['product'] = data2['products'][0]['masterProduct']['name']
                     db['sku'] = data2['products'][0]['sku']
+                    db['status'] = data2['deliveryMode']
                 await db_commands.add_deatil(db)
                 print("Добавил")
 
@@ -38,6 +39,7 @@ async def add_data():
                     db['phone'] = data2['purchaserPhoneNumber']
                     db['product'] = data2['products'][0]['masterProduct']['name']
                     db['sku'] = data2['products'][0]['sku']
+                    db['status'] = data2['deliveryMode']
                 await db_commands.add_deatil(db)
                 print("Добавил")
 
@@ -57,6 +59,7 @@ async def add_data():
                     db['phone'] = data2['purchaserPhoneNumber']
                     db['product'] = data2['products'][0]['masterProduct']['name']
                     db['sku'] = data2['products'][0]['sku']
+                    db['status'] = data2['deliveryMode']
                 await db_commands.add_deatil(db)
                 print("Добавил")
 
@@ -79,6 +82,7 @@ async def add_data2():
                     db['phone'] = data2['purchaserPhoneNumber']
                     db['product'] = data2['products'][0]['masterProduct']['name']
                     db['sku'] = data2['products'][0]['sku']
+                    db['status'] = data2['deliveryMode']
                 await db_commands.add_deatil(db)
                 print("Добавил")
 
@@ -99,6 +103,7 @@ async def add_data2():
                     db['phone'] = data2['purchaserPhoneNumber']
                     db['product'] = data2['products'][0]['masterProduct']['name']
                     db['sku'] = data2['products'][0]['sku']
+                    db['status'] = data2['deliveryMode']
                 await db_commands.add_deatil(db)
                 print("Добавил")
 
@@ -118,6 +123,7 @@ async def add_data2():
                     db['phone'] = data2['purchaserPhoneNumber']
                     db['product'] = data2['products'][0]['masterProduct']['name']
                     db['sku'] = data2['products'][0]['sku']
+                    db['status'] = data2['deliveryMode']
                 await db_commands.add_deatil(db)
                 print("Добавил")
             else:

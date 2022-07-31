@@ -71,6 +71,7 @@ try:
                 user_name varchar(50) NOT NULL,
                 phone varchar(50) NOT NULL,
                 product varchar(255) NOT NULL,
+                status varchar(50),
                 sku varchar(50) NOT NULL,
                 send varchar(10) NOT NULL
                 );
