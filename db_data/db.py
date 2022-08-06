@@ -34,7 +34,13 @@ try:
                 image7 varchar(255),
                 image8 varchar(255),
                 image9 varchar(255),
-                image10 varchar(255));
+                image10 varchar(255),
+                image11 varchar(255),
+                image12 varchar(255),
+                image13 varchar(255),
+                image14 varchar(255),
+                image15 varchar(255)
+                );
                 """
         )
     print('second')

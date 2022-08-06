@@ -15,11 +15,13 @@ from file_data import add_data
 from aiogram.types import ReplyKeyboardRemove, \
     ReplyKeyboardMarkup, KeyboardButton, \
     InlineKeyboardMarkup, InlineKeyboardButton
+from oauth2client.service_account import ServiceAccountCredentials
+import gsheets
+import requests
 
 
 
-
-button4 = KeyboardButton('/Добавить_на_DataBase')
+button4 = KeyboardButton('Добавить на Базу данных')
 button5 = KeyboardButton('Отправить на Whatsapp')
 
 markup3 = ReplyKeyboardMarkup(resize_keyboard=True).add(button4, button5)
@@ -35,78 +37,6 @@ async def process_start_command(message: types.Message):
 @dp.message_handler(commands=['help'])
 async def process_help_command(message: types.Message):
     await message.reply("ok")
-
-
-class FSMAdmin(StatesGroup):
-    document = State()
-
-
-class FSMAdminDel(StatesGroup):
-    id = State()
-
-
-@dp.message_handler(commands='Добавить_на_DataBase', state=None)
-async def cm_start(message: types.Message):
-    if message.from_user.id:
-        await FSMAdmin.document.set()
-        await message.reply('Загрузить документ.')
-
-
-@dp.message_handler(content_types=['document'], state=FSMAdmin.document)
-async def load_photo(message: types.Message, state: FSMContext):
-    if message.from_user.id:
-        async with state.proxy() as data:
-            data['document'] = message.document.file_id
-            file_name = message.document.file_name
-            id = message.from_user.id
-            first_name = (message.from_user.first_name)
-            user = {"id": id, "first_name": first_name}
-            with io.BytesIO() as file_in_io:
-                await message.document.download(destination_file=file_in_io)
-                with open("output.xlsx", "wb") as f:
-                    f.write(file_in_io.getbuffer())
-                print('bye')
-                await db_commands.add_user(user, "output.xlsx", file_name)
-            # await db_commands.add_user(user, data['document'], file_name)
-            await message.reply("Документ добавлен")
-
-        await state.finish()
-
-
-@dp.message_handler(commands=['menu'])
-async def space_menu(message: types.Message):
-    for i in range(1):
-        await db_commands.sql_read(message)
-
-
-@dp.message_handler(commands=['whatsapp'])
-async def space_whatsapp(message: types.Message):
-    for i in range(1):
-        await messenger("https://web.whatsapp.com/send?phone=", await db_commands.get_data_whatsapp())
-        await message.reply("Отправлен")
-
-
-@dp.message_handler(commands=['id'])
-async def space_menu(message: types.Message):
-    for i in range(1):
-        await db_commands.sql_read_del(message)
-
-
-@dp.message_handler(commands='del', state=None)
-async def cm_start(message: types.Message):
-    if message.from_user.id:
-        await FSMAdminDel.id.set()
-        await message.reply("Укажите  id документа.")
-
-
-@dp.message_handler(state=FSMAdminDel.id)
-async def load_id(message: types.Message, state: FSMContext):
-    if message.from_user.id:
-        async with state.proxy() as data:
-            data['id'] = message.text
-            await db_commands.sql_del(data['id'])
-            await message.reply("Домент del")
-        await state.finish()
 
 
 @dp.message_handler(content_types=['text'])
@@ -129,6 +59,24 @@ async def echo_message(message: types.Message):
                 await messenger("https://web.whatsapp.com/send?phone=", await db_commands.get_data_whatsapp(), driver)
             await message.reply("Отправлен")
             driver.quit()
+
+    if message.text == 'Добавить на Базу данных':
+        await message.reply("Немного подождите")
+        pdkey = "test.json"
+
+        SCOPE = ["https://spreadsheets.google.com/feeds", 'https://www.googleapis.com/auth/spreadsheets',
+                 "https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive"]
+        CREDS = ServiceAccountCredentials.from_json_keyfile_name(pdkey, SCOPE)
+
+        access_token = CREDS.create_delegated(CREDS._service_account_email).get_access_token().access_token
+        url = "https://docs.google.com/spreadsheets/export?id=1KMUNG2eppvyUzgMAwGYSSZlLSqsXJfVU1nlukfqOMFs&exportFormat=xlsx"
+
+        res = requests.get(url, headers={"Authorization": "Bearer " + access_token})
+
+        with open("output.xlsx", 'wb') as f:
+            f.write(res.content)
+        await db_commands.add_user("output.xlsx")
+        await message.reply("Добавил")
 
 
 if __name__ == '__main__':

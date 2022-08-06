@@ -19,9 +19,7 @@ def read():
         return sku_data
 
 
-async def add_user(data, state, file_name):
-    id = data['id']
-    first_name = data['first_name']
+async def add_user(state):
     file = state
     wb = xlrd.open_workbook(file)
     sheet = wb.sheet_by_index(0)
@@ -40,6 +38,13 @@ async def add_user(data, state, file_name):
     third_o = False
     fourth_o = False
     fifth_o = False
+
+    first_t = False
+    second_t = False
+    third_t = False
+    fourth_t = False
+    fifth_t = False
+
     for i in range(raw_number):
         if i == 0:
             continue
@@ -128,27 +133,73 @@ async def add_user(data, state, file_name):
                 image.save(file_name10)
             except ValueError:
                 fifth_o = False
+            file_name11 = f'may_images/image{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S-%f")}.jpg'
+
+            try:
+                first_t = True
+                image = image_loader.get('M' + str(i + 1))
+
+                image.save(file_name11)
+            except ValueError:
+                first_t = False
+            file_name12 = f'may_images/image{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S-%f")}.jpg'
+            try:
+                second_t = True
+                image = image_loader.get('N' + str(i + 1))
+
+                image.save(file_name12)
+            except ValueError:
+                second_t = False
+            file_name13 = f'may_images/image{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S-%f")}.jpg'
+            try:
+                third_t = True
+                image = image_loader.get('O' + str(i + 1))
+
+                image.save(file_name13)
+            except ValueError:
+                third_t = False
+            file_name14 = f'may_images/image{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S-%f")}.jpg'
+            try:
+                fourth_t = True
+                image = image_loader.get('P' + str(i + 1))
+
+                image.save(file_name4)
+            except ValueError:
+                fourth_t = False
+            file_name15 = f'may_images/image{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S-%f")}.jpg'
+            try:
+                fifth_t = True
+                image = image_loader.get('Q' + str(i + 1))
+
+                image.save(file_name15)
+            except ValueError:
+                fifth_t = False
 
             with connection.cursor() as cursor:
-                cursor.execute(
-                    "INSERT INTO users_db_tel_bot(sku, product_name, image1, image2, image3, image4, image5, image6, image7, image8, image9, image10) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);",
-                    (
-                        # id,
-                        sku,
-                        product_name,
-                        file_name1 if first else None,
-                        file_name2 if second else None,
-                        file_name3 if third else None,
-                        file_name4 if fourth else None,
-                        file_name5 if fifth else None,
-                        file_name6 if first_o else None,
-                        file_name7 if second_o else None,
-                        file_name8 if third_o else None,
-                        file_name9 if fourth_o else None,
-                        file_name10 if fifth_o else None,
+                    cursor.execute(
+                        "INSERT INTO users_db_tel_bot(sku, product_name, image1, image2, image3, image4, image5, image6, image7, image8, image9, image10, image11, image12, image13, image14, image15) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);",
+                        (
+                            # id,
+                            sku,
+                            product_name,
+                            file_name1 if first else None,
+                            file_name2 if second else None,
+                            file_name3 if third else None,
+                            file_name4 if fourth else None,
+                            file_name5 if fifth else None,
+                            file_name6 if first_o else None,
+                            file_name7 if second_o else None,
+                            file_name8 if third_o else None,
+                            file_name9 if fourth_o else None,
+                            file_name10 if fifth_o else None,
+                            file_name11 if first_t else None,
+                            file_name12 if second_t else None,
+                            file_name13 if third_t else None,
+                            file_name14 if fourth_t else None,
+                            file_name15 if fifth_t else None,
+                        )
                     )
-                )
-                print("Добавил")
+                    print("Добавил")
         elif str(sku) in read():
             print("Уже есть")
 
